@@ -5,7 +5,7 @@
 Contrary is a forecasting and decision-intelligence platform. It takes real-world
 questions, produces its own independent probability using five specialist AI
 agents, and then shows exactly which evidence pushes that forecast away from
-market consensus — and how much of that evidence survives scrutiny.
+market consensus, and how much of that evidence survives scrutiny.
 
 It is not a chatbot. There is no text input anywhere in the product. The AI runs
 behind prediction cards, charts, timelines, scenario toggles, and evidence panels.
@@ -119,7 +119,7 @@ parallel against Backboard (typically 8–20 seconds), the pipeline stages anima
 and the indicator flips to **Live forecast**.
 
 Live runs are deliberately opt-in. Pages load instantly from the seeded dataset,
-so a demo never waits on — or breaks because of — a network call. Any failure at
+so a demo never waits on, or breaks because of, a network call. Any failure at
 any stage falls back to seeded data for that piece and keeps rendering.
 
 ---
