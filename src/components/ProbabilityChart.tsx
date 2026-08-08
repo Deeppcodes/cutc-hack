@@ -19,7 +19,7 @@ import { formatDate } from "@/lib/utils";
 interface Props {
   data: PricePoint[];
   height?: number;
-  /** Dims everything after this date — used by the Time Machine. */
+  /** Truncates the series, so the Time Machine cannot show future data. */
   cutoff?: string;
 }
 

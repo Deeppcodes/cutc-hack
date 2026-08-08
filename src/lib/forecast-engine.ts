@@ -18,12 +18,9 @@ interface AggregatorReply {
 }
 
 /**
- * The combined probability is computed, not asked for.
- *
- * Letting a model pick the final number invites it to drift back toward the
- * market price it can see. Weighting each specialist by its role weight and its
- * own stated confidence keeps the headline figure a verifiable function of the
- * five numbers displayed in the forecast panel.
+ * Computed rather than asked for: a model given the final say drifts back toward
+ * the market price it can see, and the headline number stops being checkable
+ * against the five agent figures on screen.
  */
 function combineAgents(agents: AgentForecast[]) {
   const weights = agents.map((a) => a.weight * a.confidence);
@@ -40,7 +37,7 @@ function combineAgents(agents: AgentForecast[]) {
     agents.reduce((a, x) => a + (x.probability - mean) ** 2, 0) / agents.length
   );
 
-  // Wide disagreement between specialists should reduce stated confidence.
+  // Specialists spread far apart is itself a reason to claim less confidence.
   const meanConfidence =
     agents.reduce((a, x) => a + x.confidence, 0) / agents.length;
   const confidence =
@@ -85,11 +82,7 @@ Return JSON of exactly this shape:
 The reasoningSummary must be one or two sentences summarising your conclusion, never your process.`;
 }
 
-/**
- * The market price is withheld from every agent except the Market Analyst.
- * Showing it causes the others to anchor on consensus, which defeats the point
- * of forecasting independently.
- */
+/** Every agent but the Market Analyst is kept blind to the price, or they anchor on it. */
 function marketBrief(market: Market, includeConsensus: boolean): string {
   const sources = market.sources
     .map(
@@ -194,10 +187,6 @@ DIFFERENCE FROM CONSENSUS: ${gap >= 0 ? "+" : ""}${gap} points`,
   }
 }
 
-/**
- * Runs the five specialists in parallel, then aggregates. Any failure falls back
- * to the corresponding piece of seeded demo data, so the product always renders.
- */
 export async function generateForecast(market: Market): Promise<Forecast> {
   const seeded = market.forecast;
   const byId = new Map(seeded.agents.map((a) => [a.agent, a]));

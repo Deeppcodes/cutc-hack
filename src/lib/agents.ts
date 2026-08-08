@@ -5,7 +5,6 @@ export interface AgentMeta {
   name: string;
   role: string;
   mandate: string;
-  /** Tailwind-friendly accent used in the forecast panel */
   accent: string;
   keyPointsLabel: string;
   loadingLabel: string;
@@ -67,7 +66,6 @@ export const AGENT_ORDER: AgentId[] = [
   "skeptic",
 ];
 
-/** The staged pipeline shown while a forecast is being produced. */
 export const PIPELINE_STAGES = [
   "Gathering evidence…",
   "Checking historical base rates…",

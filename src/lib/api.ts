@@ -2,13 +2,8 @@ import { DEMO_MARKETS, getDemoMarket } from "./demo/markets";
 import { DEMO_TRACK_RECORD } from "./demo/track-record";
 import type { Forecast, Market, SortKey, TrackRecord } from "./types";
 
-/**
- * The single boundary between the UI and wherever data comes from.
- *
- * Everything is served from the seeded dataset today. Swapping in a live
- * prediction-market feed means changing these functions only — no component
- * imports demo data directly.
- */
+// No component imports the demo data directly, so a live market feed only has
+// to replace the readers below.
 
 export function listMarkets(): Market[] {
   return DEMO_MARKETS;
@@ -28,10 +23,7 @@ export interface ForecastResponse {
   reason?: string;
 }
 
-/**
- * Requests a freshly-run multi-agent forecast. Falls back to the seeded
- * forecast if the backend or Backboard is unavailable, so the UI never breaks.
- */
+/** Falls back to the seeded forecast rather than throwing, so the UI never breaks. */
 export async function fetchForecast(
   marketId: string,
   signal?: AbortSignal

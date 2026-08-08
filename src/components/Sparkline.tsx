@@ -7,10 +7,6 @@ interface Props {
   id: string;
 }
 
-/**
- * A pure-SVG dual sparkline. Rendered on the server so cards paint instantly
- * without waiting for the charting library to hydrate.
- */
 export function Sparkline({ data, width = 220, height = 44, id }: Props) {
   const points = data.slice(-26);
   const market = points.map((p) => p.market);

@@ -19,15 +19,11 @@ function SearchField() {
   const router = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
-  const [value, setValue] = React.useState(params.get("q") ?? "");
+  const query = params.get("q") ?? "";
 
-  React.useEffect(() => {
-    setValue(params.get("q") ?? "");
-  }, [params]);
-
-  function submit(e: React.FormEvent) {
+  function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const q = value.trim();
+    const q = String(new FormData(e.currentTarget).get("q") ?? "").trim();
     const target = pathname === "/watchlist" ? "/watchlist" : "/";
     router.push(q ? `${target}?q=${encodeURIComponent(q)}` : target);
   }
@@ -36,8 +32,10 @@ function SearchField() {
     <form onSubmit={submit} className="relative hidden md:block">
       <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#646c7a]" />
       <input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        // Remount on navigation so the field reflects the URL.
+        key={query}
+        name="q"
+        defaultValue={query}
         placeholder="Search forecasts"
         aria-label="Search forecasts"
         className="h-9 w-56 rounded-lg border border-[#1e232c] bg-[#0d0f13] pl-9 pr-3 text-[13px] text-[#e9ecf1] placeholder:text-[#646c7a] transition-colors focus:border-[#2a303b] focus:outline-none lg:w-64"

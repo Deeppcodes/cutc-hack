@@ -23,10 +23,8 @@ export function backboardConfigured() {
 }
 
 /**
- * Minimal wrapper over Backboard's thread messaging endpoint.
- *
- * Backboard is not OpenAI-compatible: a single `content` string is sent per
- * turn and the reply arrives at the top level of the response as `content`.
+ * Backboard is not OpenAI-compatible: one `content` string per turn instead of a
+ * messages array, and the reply sits at the top level of the response.
  */
 export async function backboardMessage(
   opts: BackboardOptions
@@ -84,7 +82,7 @@ export async function backboardMessage(
   }
 }
 
-/** Extracts a JSON object from a model response that may include prose or fences. */
+/** Models wrap JSON in prose or code fences often enough to be worth handling. */
 export function parseJsonResponse<T>(raw: string): T {
   const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
   const candidate = (fenced ? fenced[1] : raw).trim();

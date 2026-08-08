@@ -110,7 +110,7 @@ export interface HistoricalSnapshot {
   date: string;
   marketProbability: number;
   contraryProbability: number;
-  /** Short descriptions of evidence Contrary had access to on this date */
+  /** Only what was knowable on this date. */
   evidenceAvailable: string[];
   events: TimelineEvent[];
   /** One-line narrative of Contrary's stance at this point in time */
@@ -136,7 +136,7 @@ export interface Market {
   forecast: Forecast;
   /** Rich time-travel data — only present for deeply-researched markets */
   timeline?: HistoricalSnapshot[];
-  /** Recency of the last forecast update, ISO string */
+  /** ISO string */
   updatedAt: string;
 }
 

@@ -9,7 +9,6 @@ import type {
 } from "../types";
 import { series, type Keyframe } from "./series";
 
-/** The "now" the demo dataset is anchored to. */
 export const DEMO_TODAY = "2026-08-08";
 
 type AgentSpec = {
@@ -39,7 +38,6 @@ function buildAgents(spec: Record<AgentId, AgentSpec>): AgentForecast[] {
   });
 }
 
-/** The aggregator: a confidence-weighted combination of the agent forecasts. */
 export function aggregate(agents: AgentForecast[]): number {
   const total = agents.reduce((a, x) => a + x.weight, 0);
   const sum = agents.reduce((a, x) => a + x.probability * x.weight, 0);
@@ -106,10 +104,6 @@ function buildMarket(input: MarketInput): Market {
     },
   };
 }
-
-/* ------------------------------------------------------------------ *
- * 1 — Flagship market: the largest disagreement in the dataset
- * ------------------------------------------------------------------ */
 
 const gptSources: Source[] = [
   {
@@ -481,10 +475,6 @@ const gptMarket = buildMarket({
   ],
 });
 
-/* ------------------------------------------------------------------ *
- * 2 — Contrary moved early and the market caught up
- * ------------------------------------------------------------------ */
-
 const foldSources: Source[] = [
   {
     id: "fold-s1",
@@ -833,10 +823,6 @@ const foldMarket = buildMarket({
     },
   ],
 });
-
-/* ------------------------------------------------------------------ *
- * Remaining markets
- * ------------------------------------------------------------------ */
 
 const bocMarket = buildMarket({
   id: "boc-cut-oct-2026",

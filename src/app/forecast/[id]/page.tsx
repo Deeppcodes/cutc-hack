@@ -27,5 +27,5 @@ export default async function ForecastPage(
   const market = getMarket(id);
   if (!market) notFound();
 
-  return <ForecastDetail market={market} />;
+  return <ForecastDetail key={market.id} market={market} />;
 }

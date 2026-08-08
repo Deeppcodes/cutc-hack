@@ -1,12 +1,7 @@
 /**
- * Sanity check for the seeded dataset.
- *
- * Two invariants keep the Disagreement Engine honest:
- *   1. The weighted agent forecasts must aggregate to the published probability.
- *   2. The evidence contributions must sum to the gap versus market consensus,
- *      so the contribution waterfall actually explains the disagreement.
- *
- * Run with: npx tsx scripts/verify-data.ts
+ * Checks the two invariants the Disagreement Engine depends on: agent forecasts
+ * aggregate to the published probability, and evidence contributions sum to the
+ * gap against consensus. Run with `npx tsx scripts/verify-data.ts`.
  */
 import { DEMO_MARKETS, aggregate } from "../src/lib/demo/markets";
 

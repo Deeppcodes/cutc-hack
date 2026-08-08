@@ -35,13 +35,10 @@ export function ForecastDetail({ market }: { market: Market }) {
   const [running, setRunning] = React.useState(true);
   const [liveRun, setLiveRun] = React.useState(false);
 
-  // The seeded forecast renders immediately behind a short pipeline animation,
-  // so the page is always fast. A live Backboard run is opt-in below.
+  // Seeded data renders behind a short pipeline animation so the page never
+  // waits on the network. Live Backboard runs are opt-in via runLive.
+  // The page keys this component by market id, so mount state is the reset.
   React.useEffect(() => {
-    setForecast(market.forecast);
-    setRunning(true);
-    setStage(0);
-
     const ticker = setInterval(() => {
       setStage((s) => Math.min(PIPELINE_STAGES.length - 1, s + 1));
     }, STAGE_MS);
@@ -54,7 +51,7 @@ export function ForecastDetail({ market }: { market: Market }) {
       clearInterval(ticker);
       clearTimeout(done);
     };
-  }, [market.id, market.forecast]);
+  }, []);
 
   const runLive = React.useCallback(async () => {
     setRunning(true);
@@ -93,7 +90,6 @@ export function ForecastDetail({ market }: { market: Market }) {
         Discover
       </Link>
 
-      {/* ---- Header ---- */}
       <header className="mt-5">
         <div className="flex flex-wrap items-center gap-2.5">
           <Badge variant="outline">{market.category}</Badge>
@@ -122,7 +118,6 @@ export function ForecastDetail({ market }: { market: Market }) {
         </p>
       </header>
 
-      {/* ---- Headline probabilities ---- */}
       <div className="mt-7 grid gap-px overflow-hidden rounded-[14px] border border-[#1e232c] bg-[#1e232c] sm:grid-cols-3">
         <div className="bg-[#101318] px-6 py-6">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.1em] text-[#646c7a]">
@@ -202,7 +197,6 @@ export function ForecastDetail({ market }: { market: Market }) {
         </div>
       </div>
 
-      {/* ---- Probability over time ---- */}
       <section className="panel mt-6 p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-[16px] font-medium text-[#e9ecf1]">
@@ -215,7 +209,6 @@ export function ForecastDetail({ market }: { market: Market }) {
         </div>
       </section>
 
-      {/* ---- Multi-agent system ---- */}
       <div className="mt-6">
         {running ? (
           <ForecastPipeline stage={stage} live={liveRun} />
@@ -230,12 +223,10 @@ export function ForecastDetail({ market }: { market: Market }) {
         )}
       </div>
 
-      {/* ---- Disagreement engine ---- */}
       <div className="mt-6">
         <EvidencePanel market={enrichedMarket} />
       </div>
 
-      {/* ---- Scenarios ---- */}
       <div className="mt-6">
         <ScenarioSimulator
           baseProbability={forecast.probability}
@@ -244,14 +235,12 @@ export function ForecastDetail({ market }: { market: Market }) {
         />
       </div>
 
-      {/* ---- Time Machine ---- */}
       {market.timeline && market.timeline.length > 0 && (
         <div className="mt-6">
           <TimeMachine market={enrichedMarket} />
         </div>
       )}
 
-      {/* ---- Sources ---- */}
       <section className="mt-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>

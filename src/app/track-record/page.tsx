@@ -103,7 +103,6 @@ export default function TrackRecordPage() {
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        {/* Calibration */}
         <section className="panel p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -128,7 +127,6 @@ export default function TrackRecordPage() {
           </div>
         </section>
 
-        {/* Leaderboard */}
         <section className="panel p-6">
           <h2 className="text-[18px] font-semibold tracking-tight text-[#e9ecf1]">
             AI Forecaster Leaderboard
@@ -202,7 +200,6 @@ export default function TrackRecordPage() {
         </section>
       </div>
 
-      {/* Resolved questions */}
       <section className="panel mt-6 overflow-hidden">
         <div className="border-b border-[#1e232c] px-6 py-5">
           <h2 className="text-[18px] font-semibold tracking-tight text-[#e9ecf1]">

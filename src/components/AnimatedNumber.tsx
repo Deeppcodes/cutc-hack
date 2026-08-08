@@ -14,7 +14,6 @@ interface Props {
 
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
-/** Counts smoothly from the previous value so probability changes read as motion. */
 export function AnimatedNumber({
   value,
   duration = 700,

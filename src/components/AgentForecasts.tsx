@@ -22,6 +22,7 @@ export function AgentForecasts({
   const active =
     forecast.agents.find((a) => a.agent === selected) ?? forecast.agents[0];
   const meta = AGENTS[active.agent];
+  const maxWeight = Math.max(...forecast.agents.map((a) => a.weight));
 
   return (
     <section className="panel overflow-hidden">
@@ -167,7 +168,7 @@ export function AgentForecasts({
           <div className="h-1 w-24 overflow-hidden rounded-full bg-[#1e232c]">
             <div
               className="h-full rounded-full bg-[#3a4150]"
-              style={{ width: `${active.weight * 100 * 3}%` }}
+              style={{ width: `${(active.weight / maxWeight) * 100}%` }}
             />
           </div>
           <span className="tnum">{Math.round(active.weight * 100)}%</span>

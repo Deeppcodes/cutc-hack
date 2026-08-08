@@ -5,11 +5,7 @@ export type Keyframe = [iso: string, market: number, contrary: number];
 
 const WEEK = 7 * 86_400_000;
 
-/**
- * Expands hand-authored keyframes into a weekly probability series with a small
- * amount of deterministic jitter, so charts look like real market data while
- * staying identical between server and client renders.
- */
+/** Jitter is seeded so server and client renders match. */
 export function series(keys: Keyframe[], seed: number): PricePoint[] {
   const out: PricePoint[] = [];
   let n = 0;
