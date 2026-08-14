@@ -1,7 +1,9 @@
 import "server-only";
 
 import { AGENTS, AGENT_ORDER } from "./agents";
+import { combineAgents } from "./aggregate";
 import { backboardMessage, parseJsonResponse } from "./backboard";
+import { lensToMemory, type Lens } from "./lens";
 import type { AgentForecast, AgentId, Forecast, Market } from "./types";
 import { clamp } from "./utils";
 
@@ -17,37 +19,6 @@ interface AggregatorReply {
   forecastExplanation: string;
 }
 
-/**
- * Computed rather than asked for: a model given the final say drifts back toward
- * the market price it can see, and the headline number stops being checkable
- * against the five agent figures on screen.
- */
-function combineAgents(agents: AgentForecast[]) {
-  const weights = agents.map((a) => a.weight * a.confidence);
-  const total = weights.reduce((a, w) => a + w, 0);
-  const probability = clamp(
-    Math.round(
-      agents.reduce((a, x, i) => a + x.probability * weights[i], 0) / total
-    )
-  );
-
-  const mean =
-    agents.reduce((a, x) => a + x.probability, 0) / agents.length;
-  const spread = Math.sqrt(
-    agents.reduce((a, x) => a + (x.probability - mean) ** 2, 0) / agents.length
-  );
-
-  // Specialists spread far apart is itself a reason to claim less confidence.
-  const meanConfidence =
-    agents.reduce((a, x) => a + x.confidence, 0) / agents.length;
-  const confidence =
-    Math.round(
-      Math.min(0.95, Math.max(0.2, meanConfidence - spread / 100)) * 100
-    ) / 100;
-
-  return { probability, confidence };
-}
-
 const HOUSE_RULES = `You are one specialist inside Contrary, a forecasting system that looks for places where prediction-market consensus may be wrong.
 
 Rules:
@@ -61,7 +32,7 @@ function agentInstruction(id: AgentId): string {
   const meta = AGENTS[id];
   const specific: Record<AgentId, string> = {
     "base-rate":
-      "Pick an explicit reference class of comparable past events and estimate how often they occurred within a comparable window. Ignore the current news cycle entirely — the sources are context only. Deadlines are missed far more often than intuition suggests, so anchor on observed frequency rather than stated intent. Every key point must cite a frequency or a historical count.",
+      "Pick an explicit reference class of comparable past events and estimate how often they occurred within a comparable window. Ignore the current news cycle entirely. The sources are context only. Deadlines are missed far more often than intuition suggests, so anchor on observed frequency rather than stated intent. Every key point must cite a frequency or a historical count.",
     news: "Identify recent developments that genuinely change the forecast. Separate real signal from restatement, and say plainly when a development is suggestive rather than decisive.",
     contrarian:
       "Find assumptions that may be wrong. Check whether the popular view is answering a looser question than the resolution criteria actually require, and whether any strong precondition is missing. Your estimate should differ from the obvious reading unless the evidence genuinely leaves no room.",
@@ -73,7 +44,7 @@ function agentInstruction(id: AgentId): string {
 
   return `${HOUSE_RULES}
 
-Your role: ${meta.name} Agent — ${meta.role}.
+Your role: ${meta.name} Agent, ${meta.role}.
 Your mandate: ${meta.mandate}
 ${specific[id]}
 
@@ -82,12 +53,15 @@ Return JSON of exactly this shape:
 The reasoningSummary must be one or two sentences summarising your conclusion, never your process.`;
 }
 
-/** Every agent but the Market Analyst is kept blind to the price, or they anchor on it. */
-function marketBrief(market: Market, includeConsensus: boolean): string {
+function marketBrief(
+  market: Market,
+  includeConsensus: boolean,
+  lens?: Lens
+): string {
   const sources = market.sources
     .map(
       (s) =>
-        `- [${s.quality}] ${s.publication} (${s.date}): ${s.headline} — supports ${s.supports}`
+        `- [${s.quality}] ${s.publication} (${s.date}): ${s.headline}, supports ${s.supports}`
     )
     .join("\n");
 
@@ -105,20 +79,23 @@ CATEGORY: ${market.category}
 TODAY: ${market.updatedAt.slice(0, 10)}
 ${consensus}
 AVAILABLE SOURCES:
-${sources}`;
+${sources}${lens ? `\n\nREADER LENS (do not change your independent probability for this):\n${lensToMemory(lens)}` : ""}`;
 }
 
 async function runAgent(
   market: Market,
   id: AgentId,
-  fallback: AgentForecast
+  fallback: AgentForecast,
+  lens?: Lens
 ): Promise<AgentForecast> {
   try {
     const res = await backboardMessage({
       systemPrompt: agentInstruction(id),
-      content: marketBrief(market, id === "market"),
+      content: marketBrief(market, id === "market", lens),
       json: true,
       timeoutMs: 40_000,
+      assistantId: lens?.assistantId,
+      memory: lens?.assistantId ? "Readonly" : "off",
     });
     const parsed = parseJsonResponse<AgentReply>(res.content);
 
@@ -138,14 +115,15 @@ async function runAggregator(
   market: Market,
   agents: AgentForecast[],
   combined: number,
-  fallback: Forecast
+  fallback: Forecast,
+  lens?: Lens
 ): Promise<AggregatorReply> {
   const summary = agents
     .map(
       (a) =>
         `${a.name}: ${a.probability}% (confidence ${a.confidence.toFixed(
           2
-        )}) — ${a.reasoningSummary}`
+        )}), ${a.reasoningSummary}`
     )
     .join("\n");
 
@@ -155,14 +133,14 @@ async function runAggregator(
     const res = await backboardMessage({
       systemPrompt: `${HOUSE_RULES}
 
-You are the Forecast Aggregator. The combined probability has already been computed from the specialists by weighting each one by its confidence — your job is to explain it, not to revise it.
+You are the Forecast Aggregator. The combined probability has already been computed from the specialists by weighting each one by its confidence. Your job is to explain it, not to revise it.
 
 Return JSON of exactly this shape:
 {"uncertainties": [string, string, string], "forecastExplanation": string}
 
 forecastExplanation must be two or three sentences naming the specific evidence that drives the difference from market consensus. Do not restate the numbers, do not hedge toward consensus, and never describe your process.
 uncertainties must each name one concrete thing that could make this forecast wrong.`,
-      content: `${marketBrief(market, true)}
+      content: `${marketBrief(market, true, lens)}
 
 SPECIALIST FORECASTS (four of five never saw the market price):
 ${summary}
@@ -171,6 +149,8 @@ COMBINED CONTRARY FORECAST: ${combined}%
 DIFFERENCE FROM CONSENSUS: ${gap >= 0 ? "+" : ""}${gap} points`,
       json: true,
       timeoutMs: 40_000,
+      assistantId: lens?.assistantId,
+      memory: lens?.assistantId ? "Readonly" : "off",
     });
 
     const parsed = parseJsonResponse<AggregatorReply>(res.content);
@@ -187,16 +167,25 @@ DIFFERENCE FROM CONSENSUS: ${gap >= 0 ? "+" : ""}${gap} points`,
   }
 }
 
-export async function generateForecast(market: Market): Promise<Forecast> {
+export async function generateForecast(
+  market: Market,
+  lens?: Lens
+): Promise<Forecast> {
   const seeded = market.forecast;
   const byId = new Map(seeded.agents.map((a) => [a.agent, a]));
 
   const agents = await Promise.all(
-    AGENT_ORDER.map((id) => runAgent(market, id, byId.get(id)!))
+    AGENT_ORDER.map((id) => runAgent(market, id, byId.get(id)!, lens))
   );
 
   const { probability, confidence } = combineAgents(agents);
-  const narrative = await runAggregator(market, agents, probability, seeded);
+  const narrative = await runAggregator(
+    market,
+    agents,
+    probability,
+    seeded,
+    lens
+  );
 
   return {
     ...seeded,
@@ -211,4 +200,30 @@ export async function generateForecast(market: Market): Promise<Forecast> {
     generatedAt: new Date().toISOString(),
     origin: "live",
   };
+}
+
+export async function generateForYouNote(
+  market: Market,
+  lens: Lens
+): Promise<string> {
+  if (!lens.assistantId) return "";
+  try {
+    const res = await backboardMessage({
+      systemPrompt: `You write one or two short sentences for a forecasting product. No betting language. Do not change any probability. Explain why this question matters for this specific reader, using retrieved memory about them. Plain language. Return JSON {"note": string}.`,
+      content: `QUESTION: ${market.question}
+CATEGORY: ${market.category}
+MARKET: ${market.marketProbability}%
+CONTRARY: ${market.forecast.probability}%
+GAP: ${market.forecast.disagreementScore} points
+READER: ${lensToMemory(lens)}`,
+      json: true,
+      timeoutMs: 25_000,
+      assistantId: lens.assistantId,
+      memory: "Readonly",
+    });
+    const parsed = parseJsonResponse<{ note: string }>(res.content);
+    return parsed.note?.trim() ?? "";
+  } catch {
+    return "";
+  }
 }

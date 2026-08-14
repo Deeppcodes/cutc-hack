@@ -7,7 +7,7 @@ import { getTrackRecord } from "@/lib/api";
 import { cn, formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Track Record — Contrary",
+  title: "Track Record · Contrary",
   description:
     "Accuracy, Brier score, and calibration for every Contrary forecasting agent, measured against resolved questions.",
 };
@@ -89,7 +89,7 @@ export default function TrackRecordPage() {
           <span className="font-semibold tnum text-[#5fd06f]">
             {(record.marketBrierScore - record.brierScore).toFixed(3)}
           </span>{" "}
-          Brier points — an{" "}
+          Brier points, an{" "}
           <span className="tnum">
             {(
               ((record.marketBrierScore - record.brierScore) /
@@ -194,7 +194,7 @@ export default function TrackRecordPage() {
 
           <p className="mt-4 border-t border-[#1e232c] pt-3 text-[11.5px] leading-relaxed text-[#646c7a]">
             The combined forecast outperforms every individual agent, which is
-            the point of aggregation — the Contrarian Agent adds the most value
+            the point of aggregation. The Contrarian Agent adds the most value
             on its own, and the Market Analyst the least.
           </p>
         </section>

@@ -1,10 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import * as React from "react";
 
 import { PredictionCard } from "@/components/PredictionCard";
 import { searchMarkets, sortMarkets } from "@/lib/api";
+import { forYouScore, lensIsSet } from "@/lib/lens";
 import { CATEGORIES, SORT_OPTIONS, type Market, type SortKey } from "@/lib/types";
+import { useLens } from "@/lib/use-lens";
+import { useWatchlist } from "@/lib/use-watchlist";
 import { cn } from "@/lib/utils";
 
 const FILTERS = ["All", ...CATEGORIES] as const;
@@ -16,16 +20,26 @@ export function DiscoverBoard({
   markets: Market[];
   query: string;
 }) {
+  const { lens, ready } = useLens();
+  const { ids, has } = useWatchlist();
   const [category, setCategory] = React.useState<(typeof FILTERS)[number]>(
     "All"
   );
-  const [sort, setSort] = React.useState<SortKey>("trending");
+  const [sort, setSort] = React.useState<SortKey>("foryou");
+
+  const personal = ready && lensIsSet(lens);
 
   const visible = React.useMemo(() => {
     let list = searchMarkets(markets, query);
     if (category !== "All") list = list.filter((m) => m.category === category);
+    if (sort === "foryou") {
+      return [...list].sort(
+        (a, b) =>
+          forYouScore(b, lens, has(b.id)) - forYouScore(a, lens, has(a.id))
+      );
+    }
     return sortMarkets(list, sort);
-  }, [markets, query, category, sort]);
+  }, [markets, query, category, sort, lens, has]);
 
   const widest = React.useMemo(
     () =>
@@ -38,6 +52,20 @@ export function DiscoverBoard({
 
   return (
     <section className="mx-auto max-w-[1240px] px-5 pb-20 lg:px-8">
+      {personal && ids.length > 0 && category === "All" && !query && (
+        <p className="mb-4 text-[13px] text-[#949cab]">
+          Sorted for {lens.name.trim() || "you"}
+          {lens.categories.length ? ` · ${lens.categories.join(", ")}` : ""}
+          {lens.trustedAgent !== "balanced"
+            ? ` · extra weight on ${lens.trustedAgent.replace("-", " ")}`
+            : ""}
+          .{" "}
+          <Link href="/lens" className="text-[#f0b429] hover:underline">
+            Edit lens
+          </Link>
+        </p>
+      )}
+
       <div className="flex flex-col gap-4 border-b border-[#1e232c] pb-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-1.5">
           {FILTERS.map((f) => (

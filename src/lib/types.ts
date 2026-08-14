@@ -29,7 +29,7 @@ export interface Source {
   headline: string;
   date: string;
   url?: string;
-  /** 0..1 — how relevant this source is to the question */
+  /** 0..1. How relevant this source is to the question. */
   relevance: number;
   supports: Stance;
   quality: SourceQuality;
@@ -79,7 +79,7 @@ export interface Forecast {
   forecastExplanation: string;
   agents: AgentForecast[];
   generatedAt: string;
-  /** Where the numbers came from — drives the DEMO MODE indicator */
+  /** live = Backboard run; demo = seeded dataset */
   origin: "live" | "demo";
 }
 
@@ -89,7 +89,7 @@ export interface Scenario {
   detail: string;
   /** Signed shift in percentage points applied when toggled on */
   shift: number;
-  /** 0..1 — how likely this scenario is to occur */
+  /** 0..1. How likely this scenario is to occur. */
   likelihood: number;
 }
 
@@ -134,7 +134,7 @@ export interface Market {
   sources: Source[];
   scenarios: Scenario[];
   forecast: Forecast;
-  /** Rich time-travel data — only present for deeply-researched markets */
+  /** Rich time-travel data. Only present for deeply researched markets. */
   timeline?: HistoricalSnapshot[];
   /** ISO string */
   updatedAt: string;
@@ -182,9 +182,11 @@ export type SortKey =
   | "trending"
   | "disagreement"
   | "certain"
-  | "recent";
+  | "recent"
+  | "foryou";
 
 export const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: "foryou", label: "For you" },
   { key: "trending", label: "Trending" },
   { key: "disagreement", label: "Largest Disagreement" },
   { key: "certain", label: "Most Certain" },

@@ -6,17 +6,19 @@ import { ChevronRight, Sparkles } from "lucide-react";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { Button } from "@/components/ui/button";
 import { AGENTS } from "@/lib/agents";
-import type { Forecast } from "@/lib/types";
+import type { AgentId, Forecast } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export function AgentForecasts({
   forecast,
   marketProbability,
   onRunLive,
+  trustedAgent,
 }: {
   forecast: Forecast;
   marketProbability: number;
   onRunLive?: () => void;
+  trustedAgent?: AgentId;
 }) {
   const [selected, setSelected] = React.useState(forecast.agents[0].agent);
   const active =
@@ -91,6 +93,11 @@ export function AgentForecasts({
                 <span className="text-[12px] font-medium text-[#c4cad4]">
                   {m.name}
                 </span>
+                {trustedAgent === agent.agent && (
+                  <span className="text-[9px] uppercase tracking-[0.08em] text-[#f0b429]">
+                    your lens
+                  </span>
+                )}
               </div>
 
               <div className="mt-2 text-[28px] font-semibold leading-none tracking-tight tnum text-[#e9ecf1]">

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { TrendingDown, TrendingUp, Users } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
+import { ProbabilityStat } from "@/components/ProbabilityStat";
 import { Sparkline } from "@/components/Sparkline";
+import { Badge } from "@/components/ui/badge";
 import type { Market } from "@/lib/types";
 import {
   cn,
@@ -53,51 +54,39 @@ export function PredictionCard({ market }: { market: Market }) {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-4 border-t border-[#1e232c] pt-4">
-        <div>
-          <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.09em] text-[#646c7a]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#6b8aff]" />
-            Market
-          </div>
-          <div className="mt-1.5 flex items-baseline gap-1.5">
-            <span className="text-[28px] font-semibold leading-none tracking-tight tnum text-[#e9ecf1]">
-              {market.marketProbability}%
-            </span>
-            <span className="text-[11px] font-medium text-[#646c7a]">YES</span>
-          </div>
-          <div
-            className={cn(
-              "mt-1.5 flex items-center gap-1 text-[11px] font-medium tnum",
-              rising ? "text-[#5fd06f]" : "text-[#f0847a]"
-            )}
-          >
-            {rising ? (
-              <TrendingUp className="h-3 w-3" />
-            ) : (
-              <TrendingDown className="h-3 w-3" />
-            )}
-            {signed(market.change7d)}% this week
-          </div>
-        </div>
-
-        <div>
-          <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.09em] text-[#646c7a]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#f0b429]" />
-            Contrary
-          </div>
-          <div className="mt-1.5 flex items-baseline gap-1.5">
-            <span className="text-[28px] font-semibold leading-none tracking-tight tnum text-[#f0b429]">
-              {forecast.probability}%
-            </span>
-          </div>
-          <div className="mt-1.5">
+        <ProbabilityStat
+          tone="market"
+          value={market.marketProbability}
+          size="sm"
+          footer={
+            <div
+              className={cn(
+                "flex items-center gap-1 text-[11px] font-medium tnum",
+                rising ? "text-[#5fd06f]" : "text-[#f0847a]"
+              )}
+            >
+              {rising ? (
+                <TrendingUp className="h-3 w-3" />
+              ) : (
+                <TrendingDown className="h-3 w-3" />
+              )}
+              {signed(market.change7d)}% this week
+            </div>
+          }
+        />
+        <ProbabilityStat
+          tone="contrary"
+          value={forecast.probability}
+          size="sm"
+          footer={
             <Badge
               variant={tone === "high" ? "contrary" : "default"}
               className="tnum"
             >
               {signed(gap)}% disagreement
             </Badge>
-          </div>
-        </div>
+          }
+        />
       </div>
     </Link>
   );

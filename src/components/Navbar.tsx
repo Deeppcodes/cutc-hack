@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
 import { Search } from "lucide-react";
 
+import { LensAvatar } from "@/components/LensAvatar";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 
@@ -81,12 +82,7 @@ export function Navbar() {
           <React.Suspense fallback={<div className="hidden h-9 w-56 md:block" />}>
             <SearchField />
           </React.Suspense>
-          <div
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-[#2a303b] bg-gradient-to-br from-[#232a36] to-[#151920] text-[11px] font-semibold text-[#c4cad4]"
-            title="Signed in as Analyst"
-          >
-            AV
-          </div>
+          <LensAvatar />
         </div>
       </div>
     </header>

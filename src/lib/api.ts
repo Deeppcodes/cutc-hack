@@ -1,3 +1,4 @@
+import type { Lens } from "./lens";
 import { DEMO_MARKETS, getDemoMarket } from "./demo/markets";
 import { DEMO_TRACK_RECORD } from "./demo/track-record";
 import type { Forecast, Market, SortKey, TrackRecord } from "./types";
@@ -21,20 +22,29 @@ export interface ForecastResponse {
   forecast: Forecast;
   origin: "live" | "demo";
   reason?: string;
+  forYou?: string;
 }
 
 /** Falls back to the seeded forecast rather than throwing, so the UI never breaks. */
 export async function fetchForecast(
   marketId: string,
+  lens?: Lens,
   signal?: AbortSignal
 ): Promise<ForecastResponse> {
   const fallback = getDemoMarket(marketId)?.forecast;
 
   try {
-    const res = await fetch(`/api/forecast/${marketId}`, {
-      signal,
-      cache: "no-store",
-    });
+    const params = new URLSearchParams();
+    if (lens?.assistantId) params.set("assistantId", lens.assistantId);
+    if (lens?.trustedAgent) params.set("trustedAgent", lens.trustedAgent);
+    if (lens?.name) params.set("name", lens.name);
+    if (lens?.note) params.set("note", lens.note);
+    if (lens?.categories.length) params.set("categories", lens.categories.join(","));
+    const qs = params.toString();
+    const res = await fetch(
+      `/api/forecast/${marketId}${qs ? `?${qs}` : ""}`,
+      { signal, cache: "no-store" }
+    );
     if (!res.ok) throw new Error(`Request failed: ${res.status}`);
     const data = (await res.json()) as ForecastResponse;
     if (!data.forecast) throw new Error("Malformed forecast response");
@@ -49,9 +59,37 @@ export async function fetchForecast(
   }
 }
 
+export async function syncLens(lens: Lens) {
+  try {
+    const res = await fetch("/api/memory", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lens }),
+    });
+    if (!res.ok) {
+      return {
+        assistantId: lens.assistantId ?? null,
+        synced: false as const,
+      };
+    }
+    return (await res.json()) as {
+      assistantId: string | null;
+      synced: boolean;
+      reason?: string;
+    };
+  } catch {
+    return {
+      assistantId: lens.assistantId ?? null,
+      synced: false as const,
+    };
+  }
+}
+
 export function sortMarkets(markets: Market[], key: SortKey): Market[] {
   const copy = [...markets];
   switch (key) {
+    case "foryou":
+      return copy;
     case "disagreement":
       return copy.sort(
         (a, b) => b.forecast.disagreementScore - a.forecast.disagreementScore

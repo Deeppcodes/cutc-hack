@@ -236,7 +236,7 @@ const gptScenarios: Scenario[] = [
     id: "gpt-sc1",
     title: "Official developer preview announced",
     detail:
-      "A public preview endpoint appears on the developer platform — the single strongest leading indicator in the dataset.",
+      "A public preview endpoint appears on the developer platform, the single strongest leading indicator in the dataset.",
     shift: 29,
     likelihood: 0.35,
   },
@@ -293,12 +293,12 @@ const gptMarket = buildMarket({
   evidence: gptEvidence,
   scenarios: gptScenarios,
   uncertainties: [
-    "The question turns on general availability, but most reporting describes announcements — the two have diverged by months before.",
+    "The question turns on general availability, but most reporting describes announcements, the two have diverged by months before.",
     "What counts as a 'major' model is contested; a strongly-marketed point release could trigger a resolution dispute.",
     "A late-November launch window is plausible and sits within days of the cutoff.",
   ],
   explanation:
-    "Contrary sits 18 points below consensus. The market is pricing an imminent flagship, but this question requires general availability before December 1, and the most reliable leading indicator — a public developer preview — is absent after 90 days. Three bullish reports share a single original source, so the evidence base is narrower than its headline count.",
+    "Contrary sits 18 points below consensus. The market is pricing an imminent flagship, but this question requires general availability before December 1, and the most reliable leading indicator, a public developer preview, is absent after 90 days. Three bullish reports share a single original source, so the evidence base is narrower than its headline count.",
   agentSpec: {
     "base-rate": {
       p: 48,
@@ -322,7 +322,7 @@ const gptMarket = buildMarket({
         "Two competing frontier releases inside three weeks in May",
       ],
       summary:
-        "Recent activity is consistent with a launch already in motion. The signal is genuine but indirect — capacity and hiring precede releases by an unpredictable margin.",
+        "Recent activity is consistent with a launch already in motion. The signal is genuine but indirect, capacity and hiring precede releases by an unpredictable margin.",
     },
     contrarian: {
       p: 39,
@@ -342,7 +342,7 @@ const gptMarket = buildMarket({
       w: 0.21,
       points: [
         "72% YES, up 8 points over seven days",
-        "Volume concentrated in the last 10 days — a fast, thin move",
+        "Volume concentrated in the last 10 days, a fast, thin move",
         "Order book thins above 75%, suggesting limited conviction higher",
       ],
       summary:
@@ -355,7 +355,7 @@ const gptMarket = buildMarket({
       points: [
         "Two of three bullish leak stories trace to the same original report",
         "The July model-card screenshot is unverifiable and was deleted",
-        "Hiring-activity evidence shows recency bias — similar hiring in 2025 produced no release",
+        "Hiring-activity evidence shows recency bias, similar hiring in 2025 produced no release",
       ],
       summary:
         "After removing duplicated reporting and unverifiable leaks, the bullish case is thinner than it appears. Two signals were down-weighted and one source excluded.",
@@ -650,7 +650,7 @@ const foldMarket = buildMarket({
     "A single supplier's yield problem could delay the programme without any public signal.",
   ],
   explanation:
-    "Contrary has been above consensus since February and remains 7 points above it. Hard manufacturing commitments — tooling orders and patent grants tied to production tolerances — arrived long before the market repriced. The remaining gap reflects display yields that still sit below the usual production threshold.",
+    "Contrary has been above consensus since February and remains 7 points above it. Hard manufacturing commitments, tooling orders and patent grants tied to production tolerances, arrived long before the market repriced. The remaining gap reflects display yields that still sit below the usual production threshold.",
   agentSpec: {
     "base-rate": {
       p: 58,
@@ -682,7 +682,7 @@ const foldMarket = buildMarket({
       w: 0.24,
       points: [
         "The crowd anchored on years of failed foldable rumours and under-reacted to a real tooling order",
-        "Patent grants shifted from concept designs to manufacturing tolerances — a stage change the market ignored",
+        "Patent grants shifted from concept designs to manufacturing tolerances, a stage change the market ignored",
         "The question needs an announcement, not a shipment, which consensus keeps conflating",
       ],
       summary:
@@ -1043,7 +1043,7 @@ const bocMarket = buildMarket({
       points: [
         "The widely-cited desk note predates the July inflation release",
         "Several bullish arguments restate the same May guidance",
-        "Bearish evidence is unusually clean — three primary statistical releases",
+        "Bearish evidence is unusually clean, three primary statistical releases",
       ],
       summary:
         "The bearish case rests on primary statistics while the bullish case rests on a stale note. One signal was down-weighted accordingly.",
@@ -1177,7 +1177,7 @@ const oswMarket = buildMarket({
   ],
   uncertainties: [
     "'Major public benchmark' is ambiguous and different leaderboards would resolve differently.",
-    "A seven-day hold is fragile — closed labs can respond within days.",
+    "A seven-day hold is fragile, closed labs can respond within days.",
   ],
   explanation:
     "Contrary is 15 points above consensus. The market is pricing durable open-weights supremacy, but the question only requires a seven-day hold, and the gap to the closed leader is now inside three points after five quarters of steady convergence.",
@@ -1916,7 +1916,7 @@ const cpiMarket = buildMarket({
       id: "cpi-e2",
       title: "Market over-weights recent goods prints",
       explanation:
-        "Goods are a small share of the index, but the market repriced 5 points on a single goods release — a textbook recency reaction.",
+        "Goods are a small share of the index, but the market repriced 5 points on a single goods release, a textbook recency reaction.",
       impact: 5,
       confidence: 0.72,
       sourceIds: ["cpi-s3"],

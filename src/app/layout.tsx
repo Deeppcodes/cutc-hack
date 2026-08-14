@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 
-import { DemoModeProvider } from "@/components/DemoMode";
 import { Navbar } from "@/components/Navbar";
 import "./globals.css";
 
@@ -18,9 +17,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Contrary — Where the crowd might be wrong",
+  title: "Contrary · Where the crowd might be wrong",
   description:
-    "Prediction markets show consensus. Contrary finds the disagreement — a multi-agent forecasting system that explains where and why it differs from the crowd.",
+    "Prediction markets show consensus. Contrary finds the disagreement: a multi-agent forecasting system that explains where and why it differs from the crowd.",
 };
 
 export const viewport: Viewport = {
@@ -35,16 +34,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="bg-ambient relative flex min-h-full flex-col bg-[#08090b] font-sans text-[#e9ecf1]">
-        <DemoModeProvider>
-          <Navbar />
-          <main className="relative z-10 flex-1">{children}</main>
-          <footer className="relative z-10 border-t border-[#1e232c] py-8">
-            <div className="mx-auto max-w-[1240px] px-5 text-[12px] text-[#646c7a] lg:px-8">
-              Contrary is a forecasting research tool. Probabilities are
-              estimates, not advice.
-            </div>
-          </footer>
-        </DemoModeProvider>
+        <Navbar />
+        <main className="relative z-10 flex-1">{children}</main>
+        <footer className="relative z-10 border-t border-[#1e232c] py-8">
+          <div className="mx-auto max-w-[1240px] px-5 text-[12px] text-[#646c7a] lg:px-8">
+            Contrary is a forecasting research tool. Probabilities are
+            estimates, not advice.
+          </div>
+        </footer>
       </body>
     </html>
   );

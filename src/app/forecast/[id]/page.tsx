@@ -13,9 +13,9 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { id } = await props.params;
   const market = getMarket(id);
-  if (!market) return { title: "Forecast not found — Contrary" };
+  if (!market) return { title: "Forecast not found · Contrary" };
   return {
-    title: `${market.shortTitle} — Contrary`,
+    title: `${market.shortTitle} · Contrary`,
     description: market.description,
   };
 }

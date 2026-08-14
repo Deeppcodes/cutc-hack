@@ -3,10 +3,11 @@
 import * as React from "react";
 import { Eye, History, Pause, Play, Zap } from "lucide-react";
 
-import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { ChartLegend, ProbabilityChart } from "@/components/ProbabilityChart";
+import { ProbabilityStat } from "@/components/ProbabilityStat";
 import { SourceQualityBadge } from "@/components/SourceCard";
 import { Button } from "@/components/ui/button";
+import { SectionLabel } from "@/components/ui/section-label";
 import { Slider } from "@/components/ui/slider";
 import type { Market } from "@/lib/types";
 import { cn, formatDate, formatMonthYear, signed } from "@/lib/utils";
@@ -146,24 +147,16 @@ export function TimeMachine({ market }: { market: Market }) {
 
         <div className="flex flex-col gap-5 bg-[#0d0f13] p-6">
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.1em] text-[#646c7a]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#6b8aff]" />
-                Market
-              </div>
-              <div className="mt-1 text-[32px] font-semibold leading-none tracking-tight text-[#e9ecf1]">
-                <AnimatedNumber value={snap.marketProbability} suffix="%" />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.1em] text-[#646c7a]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#f0b429]" />
-                Contrary
-              </div>
-              <div className="mt-1 text-[32px] font-semibold leading-none tracking-tight text-[#f0b429]">
-                <AnimatedNumber value={snap.contraryProbability} suffix="%" />
-              </div>
-            </div>
+            <ProbabilityStat
+              tone="market"
+              value={snap.marketProbability}
+              animate
+            />
+            <ProbabilityStat
+              tone="contrary"
+              value={snap.contraryProbability}
+              animate
+            />
           </div>
 
           <div
@@ -182,10 +175,10 @@ export function TimeMachine({ market }: { market: Market }) {
           </p>
 
           <div>
-            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.1em] text-[#646c7a]">
+            <SectionLabel>
               <Eye className="h-3 w-3" />
               What Contrary noticed
-            </div>
+            </SectionLabel>
             <ul className="mt-2 space-y-1.5">
               {snap.evidenceAvailable.map((e) => (
                 <li
@@ -201,10 +194,10 @@ export function TimeMachine({ market }: { market: Market }) {
 
           {snap.events.length > 0 && (
             <div>
-              <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.1em] text-[#646c7a]">
+              <SectionLabel>
                 <Zap className="h-3 w-3" />
                 Events that moved the forecast
-              </div>
+              </SectionLabel>
               <div className="mt-2 space-y-2">
                 {snap.events.map((e) => (
                   <div
@@ -234,9 +227,9 @@ export function TimeMachine({ market }: { market: Market }) {
           )}
 
           <div className="mt-auto border-t border-[#1e232c] pt-4">
-            <div className="text-[10px] uppercase tracking-[0.1em] text-[#646c7a]">
+            <SectionLabel>
               Sources available on this date ({knownSources.length})
-            </div>
+            </SectionLabel>
             <div className="mt-2 space-y-1.5">
               {knownSources.length === 0 && (
                 <p className="text-[12px] text-[#646c7a]">

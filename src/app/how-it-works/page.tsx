@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { AGENTS, AGENT_ORDER } from "@/lib/agents";
 
 export const metadata: Metadata = {
-  title: "How It Works — Contrary",
+  title: "How It Works · Contrary",
   description:
     "Five specialist forecasting agents work independently, then an aggregator combines them into one calibrated probability.",
 };
@@ -20,7 +20,7 @@ const STEPS = [
   {
     n: "02",
     title: "Five agents forecast independently",
-    body: "Each specialist answers one narrow question and produces its own probability, confidence, and evidence — without seeing the others first.",
+    body: "Each specialist answers one narrow question and produces its own probability, confidence, and evidence, without seeing the others first.",
   },
   {
     n: "03",
@@ -34,8 +34,8 @@ const STEPS = [
   },
   {
     n: "05",
-    title: "Everything gets scored",
-    body: "When a question resolves, every agent is scored with a Brier score. Accuracy is measured, not asserted.",
+    title: "Your lens, remembered",
+    body: "You pick what you follow and which agent to trust more, or stay on General. Backboard stores that as memory on your assistant, so the next live run already knows who is reading.",
   },
 ];
 
@@ -53,7 +53,7 @@ export default function HowItWorksPage() {
         <p className="mt-5 text-[16px] leading-relaxed text-[#949cab]">
           A market price is one number with no explanation. Contrary produces a
           second, independent forecast and shows exactly which evidence moves it
-          away from consensus — and how reliable that evidence is.
+          away from consensus, and how reliable that evidence is.
         </p>
       </header>
 
@@ -143,7 +143,7 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      <section className="mt-12 grid gap-3 md:grid-cols-3">
+      <section className="mt-12 grid gap-3 md:grid-cols-2">
         <div className="rounded-xl border border-[#1e232c] bg-[#101318] p-5">
           <h3 className="text-[14.5px] font-medium text-[#e9ecf1]">
             Source quality is explicit
@@ -173,6 +173,16 @@ export default function HowItWorksPage() {
             including the market consensus baseline it is competing with.
           </p>
         </div>
+        <div className="rounded-xl border border-[#1e232c] bg-[#101318] p-5">
+          <h3 className="text-[14.5px] font-medium text-[#e9ecf1]">
+            Backboard is the memory, not a chat box
+          </h3>
+          <p className="mt-2 text-[13px] leading-relaxed text-[#949cab]">
+            Five agents run as separate Backboard calls. Your lens is saved on
+            an assistant with memory turned on, then read back with memory
+            Readonly so a live run knows what you follow without asking again.
+          </p>
+        </div>
       </section>
 
       <div className="mt-12 flex flex-wrap items-center gap-3">
@@ -181,6 +191,9 @@ export default function HowItWorksPage() {
             See the widest disagreement
             <ArrowRight className="h-4 w-4" />
           </Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/lens">Set your lens</Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/track-record">View the track record</Link>

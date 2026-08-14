@@ -4,7 +4,7 @@ import { WatchlistBoard } from "@/components/WatchlistBoard";
 import { listMarkets } from "@/lib/api";
 
 export const metadata: Metadata = {
-  title: "Watchlist — Contrary",
+  title: "Watchlist · Contrary",
   description: "Forecasts you are tracking, sorted by disagreement.",
 };
 
@@ -22,8 +22,8 @@ export default async function WatchlistPage(
           Watchlist
         </h1>
         <p className="mt-3 text-[15px] leading-relaxed text-[#949cab]">
-          The questions you are tracking. Widest disagreement first, so the most
-          contested forecasts stay at the top.
+          Questions you are tracking, plus anything that matches your lens.
+          Set that under Your lens.
         </p>
       </header>
 

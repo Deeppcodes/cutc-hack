@@ -18,7 +18,7 @@ export default async function DiscoverPage(props: PageProps<"/">) {
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#1e232c] bg-[#0d0f13] px-3 py-1 text-[11px] text-[#949cab]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#f0b429]" />
             Five forecasting agents ·{" "}
-            <span className="text-[#e9ecf1]">{markets.length} live questions</span>
+            <span className="text-[#e9ecf1]">{markets.length} questions</span>
           </div>
 
           <h1 className="text-[40px] font-semibold leading-[1.05] tracking-[-0.02em] text-[#e9ecf1] text-balance sm:text-[56px]">
