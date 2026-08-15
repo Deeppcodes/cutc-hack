@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="64" viewBox="0 0 280 64" fill="none">
+  <rect width="280" height="64" rx="12" fill="#08090b"/>
+  <g transform="translate(20 16) scale(1.33333)">
+    <circle cx="12" cy="12" r="10.25" stroke="#2a303b" stroke-width="1.5"/>
+    <path
+      d="M3.2 15.2C6.4 15.2 8 8.8 12 8.8s5.6 6.4 8.8 6.4"
+      stroke="#6b8aff"
+      stroke-width="1.6"
+      stroke-linecap="round"
+    />
+    <path
+      d="M3.2 9.4C6.4 9.4 8 15.6 12 15.6s5.6-6.2 8.8-6.2"
+      stroke="#f0b429"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-dasharray="2.6 2.6"
+    />
+  </g>
+  <text
+    x="64"
+    y="40"
+    fill="#e9ecf1"
+    font-family="Inter, ui-sans-serif, system-ui, sans-serif"
+    font-size="20"
+    font-weight="600"
+    letter-spacing="-0.4px"
+  >Contrary</text>
+</svg>
